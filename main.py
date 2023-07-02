@@ -18,13 +18,15 @@ def hello_command():
 
 
 @input_error
-def add_command(name, phone, contacts):
+def add_command(command, contacts):
+    _, name, phone = command.split()
     contacts[name] = phone
     return f"{name} was added"
 
 
 @input_error
-def change_command(name, phone, contacts):
+def change_command(command, contacts):
+    _, name, phone = command.split()
     if name not in contacts:
         raise KeyError
     contacts[name] = phone
@@ -32,7 +34,8 @@ def change_command(name, phone, contacts):
 
 
 @input_error
-def phone_command(name, contacts):
+def phone_command(command, contacts):
+    _, name = command.split()
     if name not in contacts:
         raise KeyError
     return f"Phone number for user {name} is {contacts[name]}"
@@ -58,29 +61,11 @@ def main():
         if command == "hello":
             print(hello_command())
         elif command.startswith("add"):
-            try:
-                _, name, phone = command.split()
-            except ValueError:
-                print("Invalid command format")
-                continue
-            print(add_command(name, phone, contacts))
-
+            print(add_command(command, contacts))
         elif command.startswith("change"):
-            try:
-                _, name, phone = command.split()
-            except ValueError:
-                print("Invalid command format")
-                continue
-            print(change_command(name, phone, contacts))
-
+            print(change_command(command, contacts))
         elif command.startswith("phone"):
-            try:
-                _, name = command.split()
-            except ValueError:
-                print("Invalid command format")
-                continue
-            print(phone_command(name, contacts))
-
+            print(phone_command(command, contacts))
         elif command == "show all":
             print(show_all_command(contacts))
         elif command in ["good bye", "close", "exit"]:
