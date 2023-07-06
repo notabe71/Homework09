@@ -13,7 +13,7 @@ def input_error(func):
 
 
 @input_error
-def hello_command():
+def hello_command(command, contacts):
     return "How can I help you?"
 
 
@@ -42,7 +42,7 @@ def phone_command(command, contacts):
 
 
 @input_error
-def show_all_command(contacts):
+def show_all_command(command, contacts):
     if not contacts:
         return "No contacts found"
     else:
@@ -52,27 +52,45 @@ def show_all_command(contacts):
         return result
 
 
+@input_error
+def bye_command(command, contacts):
+    return "Good bye!"
+
+
+OPERATIONS = {
+    "hello": hello_command,
+    "add": add_command,
+    "change": change_command,
+    "phone": phone_command,
+    "show_all": show_all_command,
+    "close": bye_command,
+    "good bye": bye_command,
+    "exit": bye_command
+
+}
+
+
+def get_handler(operation):
+    return OPERATIONS[operation]
+
+
 def main():
     contacts = {}
 
     while True:
         command = input("Enter a command: ").lower()
 
-        if command == "hello":
-            print(hello_command())
-        elif command.startswith("add"):
-            print(add_command(command, contacts))
-        elif command.startswith("change"):
-            print(change_command(command, contacts))
-        elif command.startswith("phone"):
-            print(phone_command(command, contacts))
-        elif command == "show all":
-            print(show_all_command(contacts))
-        elif command in ["good bye", "close", "exit"]:
-            print("Good bye!")
-            break
+        comm_arr = command.split()
+        if command and comm_arr[0] in OPERATIONS.keys():
+            handler = get_handler(comm_arr[0])
+
+            res = handler(command, contacts)
+            print(res)
+            if res == "Good bye!":
+                break
         else:
             print("Invalid command")
+
     return
 
 
